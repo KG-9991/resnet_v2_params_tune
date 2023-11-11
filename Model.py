@@ -98,7 +98,7 @@ class Cifar(nn.Module):
         x_test_pre = []
         for i in x:
                 x_test_pre.append(parse_record(i,False))
-        x_test_pre = torch.tensor(x_test_pre)
+        x_test_pre = torch.tensor(x_test_pre,dtype=torch.float32)
         x_test_pre = x_test_pre.cuda()
         # Now you can pass x_tensor to the network
         print('### Test or Validation ###')
@@ -108,9 +108,9 @@ class Cifar(nn.Module):
             ### YOUR CODE HERE
             preds = []
             #x_test_pre = []
-            for i in tqdm(range(x.shape[0])):
+            for i in tqdm(range(x_test_pre.shape[0])):
                 with torch.no_grad():
-                    outputs = self.network(x[i].unsqueeze(0))
+                    outputs = self.network(x_test_pre[i].unsqueeze(0))
                 _, predicted = torch.max(outputs, 1)
                 preds.append(predicted.item())
             
@@ -124,7 +124,7 @@ class Cifar(nn.Module):
     
     def save(self, epoch):
         checkpoint_path = os.path.join(self.config.modeldir+'v2-%d'%(self.config.model_number), 'model-%d.ckpt'%(epoch))
-        os.makedirs(self.config.modeldir, exist_ok=True)
+        os.makedirs(self.config.modeldir+'v2-%d'%(self.config.model_number), exist_ok=True)
         torch.save(self.network.state_dict(), checkpoint_path)
         print("Checkpoint has been created.")
     

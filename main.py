@@ -10,7 +10,7 @@ import argparse
 def configure():
     parser = argparse.ArgumentParser()
     ### YOUR CODE HERE
-    parser.add_argument("--resnet_version", type=int, default=1, help="the version of ResNet")
+    parser.add_argument("--resnet_version", type=int, default=2, help="the version of ResNet")
     parser.add_argument("--resnet_size", type=int, default=18, 
                         help='n: the size of ResNet-(6n+2) v1 or ResNet-(9n+2) v2')
     parser.add_argument("--batch_size", type=int, default=128, help='training batch size')
@@ -19,7 +19,7 @@ def configure():
                         help='save the checkpoint when epoch MOD save_interval == 0')
     parser.add_argument("--first_num_filters", type=int, default=16, help='number of classes')
     parser.add_argument("--weight_decay", type=float, default=2e-4, help='weight decay rate')
-    parser.add_argument("--modeldir", type=str, default='model_v1', help='model directory')
+    parser.add_argument("--modeldir", type=str, default='model', help='model directory')
     parser.add_argument("--learning_rate", type=float, default=0.1, help='learning rate')
     parser.add_argument("--model_number", type=int, default=1, help='model number')
     ### YOUR CODE HERE
@@ -57,8 +57,10 @@ def main(config):
                 config.weight_decay = k
                 print("The hyperparameters for model",config.model_number,"used are: Batch Size",config.batch_size,"Learning Rate:",config.learning_rate,"Weight Decay:",config.weight_decay)
                 model = Cifar(config).cuda()
+                """device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+                model.to(device)"""
                 model.train(x_train_new, y_train_new, 200)
-                model.test_or_validate(x_valid, y_valid, [160, 170, 180, 190, 200])
+                model.test_or_validate(x_valid, y_valid, [160,170,180,190,200])
                 config.model_number += 1
     #model.train(x_train_new, y_train_new, 200)
     #model.test_or_validate(x_valid, y_valid, [160, 170, 180, 190, 200])
